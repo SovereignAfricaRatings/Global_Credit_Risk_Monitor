@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Credit Sensitivity Analysis: US-Iran Geopolitical Shock</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind Config updated to align with the new scheme -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Open Sans"', 'sans-serif'],
+                        serif: ['Merriweather', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Base Styling */
+        body {
+            background-color: #f8fafc; /* slate-50 */
+            color: #0f172a; /* slate-900 */
+        }
+
+        /* Chart Container Mandatory Constraints */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            max-height: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+            .chart-container-large {
+                height: 450px;
+            }
+        }
+
+        /* Custom Scrollbar - Updated to Slate/Purple */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9; /* slate-100 */
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; /* slate-300 */
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #9333ea; /* purple-600 */
+        }
+
+        /* Transition Utilities */
+        .fade-transition {
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased leading-relaxed bg-slate-50 text-slate-900">
+
+    <!-- Navigation & Scenario Controls -->
+    <nav class="sticky top-0 z-50 bg-slate-50/90 backdrop-blur-md border-b border-slate-200 shadow-sm py-4">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <h1 class="text-xl md:text-2xl font-serif font-bold text-slate-900 tracking-tight">Global Credit Risk Monitor</h1>
+                <p class="text-sm text-slate-500 font-medium">Special Report: US-Iran Escalation Scenarios</p>
+            </div>
+            
+            <div class="flex items-center space-x-2 bg-white p-1.5 rounded-lg border border-slate-200 shadow-sm">
+                <span class="text-sm font-semibold pl-2 text-slate-600 hidden sm:inline-block">Select Scenario:</span>
+                <button onclick="setScenario('base')" id="btn-base" class="px-4 py-2 text-sm font-medium rounded-md bg-indigo-600 text-white shadow transition-colors">Base Case</button>
+                <button onclick="setScenario('stress')" id="btn-stress" class="px-4 py-2 text-sm font-medium rounded-md text-slate-600 hover:bg-slate-100 transition-colors">Targeted Strike</button>
+                <button onclick="setScenario('severe')" id="btn-severe" class="px-4 py-2 text-sm font-medium rounded-md text-slate-600 hover:bg-slate-100 transition-colors">Strait Closure</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+
+        <!-- Executive Summary Section -->
+        <section id="executive-summary" class="bg-white rounded-3xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <div class="max-w-4xl">
+                <div class="flex items-center gap-2 mb-2">
+                    <div class="w-6 h-6 border-2 border-purple-200 rounded-full flex items-center justify-center">
+                        <div class="w-3 h-3 bg-purple-400 rounded-full"></div>
+                    </div>
+                    <h2 class="text-xs font-bold tracking-widest text-purple-600 uppercase">Analyst Briefing</h2>
+                </div>
+                <h3 id="scenario-title" class="text-2xl md:text-3xl font-serif font-bold text-slate-900 mb-4 transition-colors duration-300">Base Case: Status Quo with Simmering Tensions</h3>
+                
+                <p class="text-slate-700 mb-4 font-semibold">Probability: <span id="scenario-prob" class="px-2 py-1 rounded text-sm font-bold bg-indigo-100 text-indigo-700 border border-indigo-200">65%</span></p>
+                
+                <p id="scenario-desc" class="text-lg text-slate-600 leading-relaxed fade-transition">
+                    Our baseline assumption factors in continued diplomatic friction and proxy engagements without direct, sustained military confrontation between the US and Iran. Oil markets maintain a geopolitical risk premium, but physical supply remains largely uninterrupted. Credit conditions globally follow their current trajectory of a soft landing, with African sovereigns gradually returning to international capital markets.
+                </p>
+            </div>
+        </section>
+
+        <!-- Macroeconomic Indicators Section -->
+        <section>
+            <div class="mb-6">
+                <h2 class="text-2xl font-serif font-bold text-slate-900">Macroeconomic Transmission</h2>
+                <p class="text-slate-600 mt-2">
+                    This section illustrates how the selected geopolitical shock transmits through the global economy. The primary vector is energy prices, which subsequently impact global growth and inflation trajectories. The charts below compare the current selected scenario against our baseline projections over a 24-month horizon.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Chart 1: Oil -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 hover:shadow-md transition-shadow">
+                    <h3 class="font-bold text-slate-900 mb-1">Brent Crude ($/bbl)</h3>
+                    <p class="text-xs font-medium text-slate-500 uppercase tracking-tighter mb-4">Supply shock indicator</p>
+                    <div class="chart-container">
+                        <canvas id="oilChart"></canvas>
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-3 text-right italic">Source: Bloomberg & SAR Projections</p>
+                </div>
+
+                <!-- Chart 2: GDP -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 hover:shadow-md transition-shadow">
+                    <h3 class="font-bold text-slate-900 mb-1">Global GDP Growth (%)</h3>
+                    <p class="text-xs font-medium text-slate-500 uppercase tracking-tighter mb-4">Demand destruction indicator</p>
+                    <div class="chart-container">
+                        <canvas id="gdpChart"></canvas>
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-3 text-right italic">Source: IMF WEO & SAR Estimates</p>
+                </div>
+
+                <!-- Chart 3: Inflation -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 hover:shadow-md transition-shadow">
+                    <h3 class="font-bold text-slate-900 mb-1">Global Inflation (CPI %)</h3>
+                    <p class="text-xs font-medium text-slate-500 uppercase tracking-tighter mb-4">Monetary policy constraint</p>
+                    <div class="chart-container">
+                        <canvas id="inflationChart"></canvas>
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-3 text-right italic">Source: World Bank & SAR Estimates</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Credit Implications Deep Dive -->
+        <section class="bg-white rounded-3xl p-6 md:p-8 border border-slate-200 shadow-sm">
+            <div class="mb-8">
+                <h2 class="text-2xl font-serif font-bold text-slate-900">Credit Rating Implications</h2>
+                <p class="text-slate-600 mt-2">
+                    Explore the differential impact of the current scenario on various credit sectors. As rating analysts, we assess vulnerabilities based on external financing needs, fiscal buffers, and sector-specific exposure to energy costs.
+                </p>
+            </div>
+
+            <!-- Tabs -->
+            <div class="border-b border-slate-200 mb-6 flex space-x-6 overflow-x-auto">
+                <button onclick="switchTab('sovereign')" id="tab-sovereign" class="pb-3 text-sm font-bold text-purple-700 border-b-2 border-purple-600 uppercase tracking-wide whitespace-nowrap transition-colors">Sovereign Focus: Africa</button>
+                <button onclick="switchTab('corporate')" id="tab-corporate" class="pb-3 text-sm font-bold text-slate-500 hover:text-slate-800 border-b-2 border-transparent uppercase tracking-wide whitespace-nowrap transition-colors">Global Corporates</button>
+            </div>
+
+            <!-- Tab Content: Sovereign -->
+            <div id="content-sovereign" class="grid grid-cols-1 lg:grid-cols-2 gap-8 fade-transition">
+                <div>
+                    <h3 class="text-xl font-serif font-bold text-slate-900 mb-3">African Sovereign Vulnerability Matrix</h3>
+                    <p class="text-sm text-slate-600 mb-6">
+                        A Middle East conflict triggers two simultaneous shocks for emerging markets: a terms-of-trade shock (higher import bills for oil importers) and a financial shock (capital flight to safe-haven assets, spiking borrowing costs).
+                    </p>
+                    
+                    <div class="space-y-4">
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 border-l-4 border-l-red-600 shadow-sm">
+                            <h4 class="font-bold text-slate-800 flex items-center"><span>&#9888;</span> <span class="ml-2">High Vulnerability (Oil Importers with High Debt)</span></h4>
+                            <p class="text-sm mt-1 text-slate-600">Countries like <strong class="text-slate-800">Kenya, Egypt, and Senegal</strong> face severe rating pressure. Higher fuel import bills drain FX reserves, while surging US Treasury yields effectively close market access for refinancing Eurobonds.</p>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 border-l-4 border-l-green-500 shadow-sm">
+                            <h4 class="font-bold text-slate-800 flex items-center"><span>&#10004;</span> <span class="ml-2">Mixed/Positive Outlook (Oil Exporters)</span></h4>
+                            <p class="text-sm mt-1 text-slate-600"><strong class="text-slate-800">Nigeria and Angola</strong> experience near-term fiscal windfalls from elevated oil prices. However, in severe scenarios, global demand destruction limits volume, and structural economic issues remain unaddressed.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 hover:shadow-md transition-shadow">
+                    <h4 class="font-bold text-slate-900 text-center mb-1">Vulnerability Map (Illustrative)</h4>
+                    <p class="text-xs font-medium uppercase tracking-tighter text-center text-slate-500 mb-4">External Debt vs. FX Reserves Adequacy</p>
+                    <div class="chart-container chart-container-large">
+                        <canvas id="scatterChart"></canvas>
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-3 text-right italic">Source: National Central Banks & SAR Database</p>
+                </div>
+            </div>
+
+            <!-- Tab Content: Corporate -->
+            <div id="content-corporate" class="hidden fade-transition">
+                <h3 class="text-xl font-serif font-bold text-slate-900 mb-3">Corporate Sector Impact Heatmap</h3>
+                <p class="text-sm text-slate-600 mb-6 max-w-3xl">
+                    Under the <strong id="corp-scenario-name" class="text-indigo-600">current scenario</strong>, the primary driver of corporate defaults shifts from organic demand issues to acute margin compression via input costs and supply chain disruptions.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Cards update dynamically via JS -->
+                    <div id="sector-airlines" class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm transition-colors duration-300">
+                        <div class="text-2xl mb-2 text-slate-700">&#9992;</div>
+                        <h4 class="font-bold text-slate-900">Airlines & Logistics</h4>
+                        <p class="text-sm mt-2 font-bold text-slate-700">Impact: <span class="impact-level text-indigo-600">Moderate</span></p>
+                        <p class="text-xs mt-1 text-slate-500 font-medium sector-desc">Fuel costs are manageable; hedging provides buffer.</p>
+                    </div>
+                    
+                    <div id="sector-chemicals" class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm transition-colors duration-300">
+                        <div class="text-2xl mb-2 text-slate-700">&#9794;</div> 
+                        <h4 class="font-bold text-slate-900">Petrochemicals (Europe/Asia)</h4>
+                        <p class="text-sm mt-2 font-bold text-slate-700">Impact: <span class="impact-level text-indigo-600">Low</span></p>
+                        <p class="text-xs mt-1 text-slate-500 font-medium sector-desc">Margins stable as input costs remain normalized.</p>
+                    </div>
+
+                    <div id="sector-energy" class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm transition-colors duration-300">
+                        <div class="text-2xl mb-2 text-slate-700">&#9881;</div>
+                        <h4 class="font-bold text-slate-900">E&P Energy Companies</h4>
+                        <p class="text-sm mt-2 font-bold text-slate-700">Impact: <span class="impact-level text-indigo-600">Positive</span></p>
+                        <p class="text-xs mt-1 text-slate-500 font-medium sector-desc">Steady cash flows; deleveraging continues.</p>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Footer / Analysts -->
+        <footer class="mt-12 pt-8 border-t border-slate-200 flex flex-col md:flex-row justify-between items-start gap-8">
+            <div class="space-y-4">
+                <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400">Primary Contributors</h3>
+                <div class="flex flex-wrap gap-6">
+                    <div>
+                        <p class="font-bold text-slate-800">Ted Maselesele CA(SA)</p>
+                        <p class="text-xs text-slate-500">Rating Analyst</p>
+                    </div>
+                    <div>
+                        <p class="font-bold text-slate-800">Bekithemba Ndimande</p>
+                        <p class="text-xs text-slate-500">Senior Rating Analyst</p>
+                    </div>
+                    <div>
+                        <p class="font-bold text-slate-800">Zwelibanzi Maziya</p>
+                        <p class="text-xs text-slate-500">Chief Rating Officer</p>
+                    </div>
+                </div>
+            </div>
+            <div class="text-right">
+                <p class="text-xs text-slate-400 max-w-xs ml-auto md:ml-0 md:mr-0">
+                    Sovereign Africa Ratings is a licensed credit rating agency (FSCA License No. FSCA-CRA006). This data is for informational purposes only.
+                </p>
+                <p class="text-purple-600 font-bold mt-2">www.saratings.com</p>
+            </div>
+        </footer>
+    </main>
+
+    <!-- Application Logic -->
+    <script>
+        // --- Data Definitions ---
+        const scenarioData = {
+            base: {
+                id: 'base',
+                color: '#4f46e5', // indigo-600
+                bgColor: 'bg-indigo-100',
+                borderColor: 'border-indigo-200',
+                textColor: 'text-indigo-700',
+                title: 'Base Case: Status Quo with Simmering Tensions',
+                prob: '65%',
+                desc: 'Our baseline assumption factors in continued diplomatic friction and proxy engagements without direct, sustained military confrontation between the US and Iran. Oil markets maintain a geopolitical risk premium, but physical supply remains largely uninterrupted. Credit conditions globally follow their current trajectory of a soft landing, with African sovereigns gradually returning to international capital markets.',
+                data: {
+                    labels: ['Q1', 'Q2', 'Q3', 'Q4', 'Q1 (Next Yr)', 'Q2 (Next Yr)'],
+                    oil: [82, 80, 78, 75, 75, 76],
+                    gdp: [3.1, 3.1, 3.2, 3.2, 3.3, 3.3],
+                    inflation: [4.2, 3.8, 3.5, 3.2, 3.0, 2.8]
+                },
+                sectors: {
+                    airlines: { level: 'Moderate', desc: 'Fuel costs manageable; hedging programs effective.', color: 'bg-slate-50 border-slate-200' },
+                    chemicals: { level: 'Low', desc: 'Stable margins; supply chains intact.', color: 'bg-green-50 border-green-200' },
+                    energy: { level: 'Positive', desc: 'Steady cash flows support continued deleveraging.', color: 'bg-indigo-50 border-indigo-200' }
+                }
+            },
+            stress: {
+                id: 'stress',
+                color: '#9333ea', // purple-600
+                bgColor: 'bg-purple-100',
+                borderColor: 'border-purple-200',
+                textColor: 'text-purple-700',
+                title: 'Scenario A: Targeted Strike & Retaliation',
+                prob: '25%',
+                desc: 'Involves limited, targeted military strikes on strategic assets. Results in temporary disruptions to shipping lanes but falls short of a full regional war. Markets price in significant risk premium. For credit markets, this causes a sharp widening of emerging market spreads, freezing new issuance for sub-investment grade African sovereigns for 3-6 months.',
+                data: {
+                    labels: ['Q1', 'Q2', 'Q3', 'Q4', 'Q1 (Next Yr)', 'Q2 (Next Yr)'],
+                    oil: [82, 105, 95, 90, 85, 82],
+                    gdp: [3.1, 2.6, 2.7, 2.9, 3.1, 3.2],
+                    inflation: [4.2, 5.5, 5.0, 4.5, 4.0, 3.5]
+                },
+                sectors: {
+                    airlines: { level: 'High Risk', desc: 'Unhedged fuel exposure erodes operating margins.', color: 'bg-purple-50 border-purple-200' },
+                    chemicals: { level: 'Moderate', desc: 'Input cost spikes compress margins temporarily.', color: 'bg-slate-50 border-slate-200' },
+                    energy: { level: 'Highly Positive', desc: 'Windfall profits, rapid debt reduction.', color: 'bg-green-100 border-green-300' }
+                }
+            },
+            severe: {
+                id: 'severe',
+                color: '#dc2626', // red-600
+                bgColor: 'bg-red-100',
+                borderColor: 'border-red-200',
+                textColor: 'text-red-700',
+                title: 'Scenario B: Escalation & Strait of Hormuz Closure',
+                prob: '10%',
+                desc: 'A tail-risk event involving sustained regional conflict and the closure of the Strait of Hormuz, removing ~20% of global oil supply. This triggers a global recessionary shock. For Africa, the combination of double-digit inflation, collapsing global demand, and soaring borrowing costs will precipitate multiple sovereign debt restructuring events.',
+                data: {
+                    labels: ['Q1', 'Q2', 'Q3', 'Q4', 'Q1 (Next Yr)', 'Q2 (Next Yr)'],
+                    oil: [82, 150, 135, 120, 110, 100],
+                    gdp: [3.1, 0.5, -1.0, -0.5, 0.5, 1.2],
+                    inflation: [4.2, 8.5, 9.0, 7.5, 6.0, 5.0]
+                },
+                sectors: {
+                    airlines: { level: 'Severe Downgrades', desc: 'Demand destruction + record fuel costs = existential threat.', color: 'bg-red-50 border-red-200' },
+                    chemicals: { level: 'High Risk', desc: 'Severe margin squeeze; European plants halt production.', color: 'bg-red-50 border-red-200' },
+                    energy: { level: 'Mixed/Volatile', desc: 'Massive revenues, but political risk of windfall taxes rises.', color: 'bg-purple-50 border-purple-200' }
+                }
+            }
+        };
+
+        let currentScenario = 'base';
+        let charts = {};
+
+        // --- Common Chart Configuration ---
+        Chart.defaults.font.family = "'Open Sans', sans-serif";
+        Chart.defaults.color = '#475569'; // slate-600
+        
+        const commonOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, font: { weight: '500' } } },
+                tooltip: { backgroundColor: 'rgba(15, 23, 42, 0.9)', padding: 10, cornerRadius: 8, titleFont: { family: "'Open Sans'" }, bodyFont: { family: "'Open Sans'" } }
+            },
+            scales: {
+                x: { grid: { display: false } },
+                y: { grid: { color: '#e2e8f0', borderDash: [5, 5] }, beginAtZero: false } // slate-200
+            },
+            interaction: { mode: 'index', intersect: false }
+        };
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initCharts();
+            updateUI(currentScenario);
+        });
+
+        // --- Core Logic: Scenario Switching ---
+        function setScenario(scenarioKey) {
+            if (currentScenario === scenarioKey) return;
+            currentScenario = scenarioKey;
+            
+            // Update Buttons
+            ['base', 'stress', 'severe'].forEach(key => {
+                const btn = document.getElementById(`btn-${key}`);
+                if (key === scenarioKey) {
+                    btn.className = `px-4 py-2 text-sm font-medium rounded-md text-white shadow transition-colors`;
+                    btn.style.backgroundColor = scenarioData[key].color;
+                } else {
+                    btn.className = `px-4 py-2 text-sm font-medium rounded-md text-slate-600 hover:bg-slate-100 transition-colors`;
+                    btn.style.backgroundColor = 'transparent';
+                }
+            });
+
+            // Update UI & Charts
+            updateUI(scenarioKey);
+            updateCharts(scenarioKey);
+        }
+
+        function updateUI(scenarioKey) {
+            const data = scenarioData[scenarioKey];
+            
+            // Text Updates
+            const titleEl = document.getElementById('scenario-title');
+            const descEl = document.getElementById('scenario-desc');
+            const probEl = document.getElementById('scenario-prob');
+            
+            // Simple fade effect
+            [titleEl, descEl].forEach(el => el.style.opacity = 0);
+            
+            setTimeout(() => {
+                titleEl.textContent = data.title;
+                titleEl.style.color = data.color;
+                descEl.textContent = data.desc;
+                probEl.textContent = data.prob;
+                
+                // Color code the probability badge
+                probEl.className = `px-2 py-1 rounded text-sm font-bold border transition-colors ${data.bgColor} ${data.textColor} ${data.borderColor}`;
+
+                document.getElementById('corp-scenario-name').textContent = data.title;
+                document.getElementById('corp-scenario-name').style.color = data.color;
+
+                [titleEl, descEl].forEach(el => el.style.opacity = 1);
+            }, 300);
+
+            // Update Corporate Sector Cards
+            const sectors = ['airlines', 'chemicals', 'energy'];
+            sectors.forEach(sector => {
+                const card = document.getElementById(`sector-${sector}`);
+                const sData = data.sectors[sector];
+                
+                // Reset classes
+                card.className = `bg-white p-5 rounded-2xl border shadow-sm transition-colors duration-300 ${sData.color}`;
+                card.querySelector('.impact-level').textContent = sData.level;
+                card.querySelector('.impact-level').style.color = data.color;
+                card.querySelector('.sector-desc').textContent = sData.desc;
+            });
+        }
+
+        // --- Tab Logic ---
+        function switchTab(tabName) {
+            ['sovereign', 'corporate'].forEach(name => {
+                const tabBtn = document.getElementById(`tab-${name}`);
+                const content = document.getElementById(`content-${name}`);
+                
+                if (name === tabName) {
+                    tabBtn.classList.replace('text-slate-500', 'text-purple-700');
+                    tabBtn.classList.replace('border-transparent', 'border-purple-600');
+                    content.classList.remove('hidden');
+                    // Trigger resize to ensure canvas fits if it was hidden
+                    if(name === 'sovereign') {
+                        charts.scatter.resize();
+                    }
+                } else {
+                    tabBtn.classList.replace('text-purple-700', 'text-slate-500');
+                    tabBtn.classList.replace('border-purple-600', 'border-transparent');
+                    content.classList.add('hidden');
+                }
+            });
+        }
+
+        // --- Chart Generation & Updating ---
+        function initCharts() {
+            const baseData = scenarioData.base.data;
+            const labels = baseData.labels;
+
+            // 1. Oil Chart
+            const ctxOil = document.getElementById('oilChart').getContext('2d');
+            charts.oil = new Chart(ctxOil, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Baseline Forecast',
+                            data: baseData.oil,
+                            borderColor: '#94a3b8', // slate-400
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            tension: 0.4,
+                            pointRadius: 0
+                        },
+                        {
+                            label: 'Selected Scenario',
+                            data: baseData.oil,
+                            borderColor: scenarioData.base.color,
+                            backgroundColor: scenarioData.base.color + '20', // Add transparency
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: { ...commonOptions, scales: { y: { ...commonOptions.scales.y, min: 60, max: 160 } } }
+            });
+
+            // 2. GDP Chart
+            const ctxGdp = document.getElementById('gdpChart').getContext('2d');
+            charts.gdp = new Chart(ctxGdp, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Baseline Forecast',
+                            data: baseData.gdp,
+                            backgroundColor: '#e2e8f0', // slate-200
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Selected Scenario',
+                            data: baseData.gdp,
+                            backgroundColor: scenarioData.base.color,
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: { ...commonOptions, scales: { y: { ...commonOptions.scales.y, min: -2, max: 5 } } }
+            });
+
+            // 3. Inflation Chart
+            const ctxInf = document.getElementById('inflationChart').getContext('2d');
+            charts.inflation = new Chart(ctxInf, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Baseline Forecast',
+                            data: baseData.inflation,
+                            borderColor: '#94a3b8', // slate-400
+                            borderDash: [5, 5],
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Selected Scenario',
+                            data: baseData.inflation,
+                            borderColor: scenarioData.base.color,
+                            borderWidth: 3,
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: { ...commonOptions, scales: { y: { ...commonOptions.scales.y, min: 2, max: 10 } } }
+            });
+
+            // Custom Chart.js Plugin to permanently draw country labels on the scatter plot
+            const alwaysShowLabelsPlugin = {
+                id: 'alwaysShowLabels',
+                afterDatasetsDraw(chart) {
+                    const { ctx } = chart;
+                    ctx.save();
+                    ctx.font = '600 11px "Open Sans", sans-serif';
+                    ctx.fillStyle = '#475569'; // slate-600
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'bottom';
+
+                    chart.data.datasets.forEach((dataset, i) => {
+                        const meta = chart.getDatasetMeta(i);
+                        meta.data.forEach((datapoint, index) => {
+                            const { x, y } = datapoint.tooltipPosition();
+                            const text = dataset.data[index].country;
+                            // Draw text slightly above the data point
+                            ctx.fillText(text, x, y - 12); 
+                        });
+                    });
+                    ctx.restore();
+                }
+            };
+
+            // 4. Scatter Plot (Sovereign Vulnerability)
+            const ctxScatter = document.getElementById('scatterChart').getContext('2d');
+            charts.scatter = new Chart(ctxScatter, {
+                type: 'scatter',
+                plugins: [alwaysShowLabelsPlugin], // Inject the custom plugin here
+                data: {
+                    datasets: [{
+                        label: 'African Sovereigns',
+                        data: [
+                            { x: 85, y: 1.5, country: 'Kenya', exporter: false },
+                            { x: 92, y: 3.2, country: 'Egypt', exporter: false },
+                            { x: 70, y: 2.1, country: 'Senegal', exporter: false },
+                            { x: 65, y: 5.5, country: 'South Africa', exporter: false },
+                            { x: 35, y: 8.0, country: 'Nigeria', exporter: true },
+                            { x: 50, y: 6.5, country: 'Angola', exporter: true },
+                            { x: 40, y: 4.0, country: 'Cote d\'Ivoire', exporter: false }
+                        ],
+                        backgroundColor: (context) => {
+                            const exporter = context.raw?.exporter;
+                            return exporter ? '#22c55e' : '#6366f1'; // green-500 : indigo-500
+                        },
+                        pointRadius: 8,
+                        pointHoverRadius: 10
+                    }]
+                },
+                options: {
+                    layout: { padding: { top: 20 } }, // Add top padding so labels don't get cut off
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.raw.country} (Debt: ${context.raw.x}%, FX: ${context.raw.y}m)`;
+                                }
+                            }
+                        },
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: { 
+                            title: { display: true, text: 'External Debt (% of GDP) → Worse', color: '#64748b', font: {weight: '600'} },
+                            grid: { color: '#e2e8f0' } // slate-200
+                        },
+                        y: { 
+                            title: { display: true, text: 'FX Reserves (Months Import Cover) → Better', color: '#64748b', font: {weight: '600'} },
+                            grid: { color: '#e2e8f0' } // slate-200
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateCharts(scenarioKey) {
+            const data = scenarioData[scenarioKey].data;
+            const color = scenarioData[scenarioKey].color;
+
+            // Update Oil
+            charts.oil.data.datasets[1].data = data.oil;
+            charts.oil.data.datasets[1].borderColor = color;
+            charts.oil.data.datasets[1].backgroundColor = color + '20';
+            charts.oil.update();
+
+            // Update GDP
+            charts.gdp.data.datasets[1].data = data.gdp;
+            charts.gdp.data.datasets[1].backgroundColor = color;
+            charts.gdp.update();
+
+            // Update Inflation
+            charts.inflation.data.datasets[1].data = data.inflation;
+            charts.inflation.data.datasets[1].borderColor = color;
+            charts.inflation.update();
+
+            // Highlight vulnerability on scatter based on scenario severity
+            const scatterColors = charts.scatter.data.datasets[0].data.map(d => {
+                if (scenarioKey === 'base') return d.exporter ? '#22c55e' : '#6366f1'; // Green : Indigo
+                if (scenarioKey === 'stress') return d.exporter ? '#22c55e' : '#9333ea'; // Green : Purple
+                return d.exporter ? '#f59e0b' : '#dc2626'; // Amber : Red
+            });
+            charts.scatter.data.datasets[0].backgroundColor = scatterColors;
+            charts.scatter.update();
+        }
+    </script>
+</body>
+</html>
